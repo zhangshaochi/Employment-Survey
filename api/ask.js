@@ -23,6 +23,7 @@ export default async function handler(req, res) {
     const result = await response.json();
     const text = result?.output?.text || result?.text || '无返回内容';
     return res.status(200).json({ answer: text });
+    console.log('百炼原始返回：', JSON.stringify(result, null, 2));
   } catch (e) {
     return res.status(500).json({ answer: '后端调用失败：' + e.message });
   }
