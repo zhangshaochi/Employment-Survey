@@ -10,7 +10,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer sk-ce2b3770b8fe456db1a4993678e35151'  
+        'Authorization': 'Bearer sk-e6cc1abb56f449bf81d2c296edfb1d6f'  
       },
       body: JSON.stringify({
         app_id: process.env.BAILIAN_APP_ID,
