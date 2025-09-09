@@ -1,4 +1,4 @@
-// 阿里百炼 对话接口
+// 阿里百炼对话接口
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
@@ -10,10 +10,10 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.BAILIAN_API_KEY}` // 密钥藏在环境变量
+        'Authorization': `Bearer ${process.env.BAILIAN_API_KEY}`
       },
       body: JSON.stringify({
-        app_id: process.env.BAILIAN_APP_ID, // 你的百炼应用 ID
+        app_id: process.env.BAILIAN_APP_ID,
         prompt,
         temperature: 0.7,
         max_tokens: 800
@@ -21,10 +21,13 @@ export default async function handler(req, res) {
     });
 
     const result = await response.json();
+    // 先打印再返回
+    console.log('百炼原始返回：', JSON.stringify(result, null, 2));
+
     const text = result?.output?.text || result?.text || '无返回内容';
     return res.status(200).json({ answer: text });
-    console.log('百炼原始返回：', JSON.stringify(result, null, 2));
   } catch (e) {
+    console.error('调用百炼异常：', e);
     return res.status(500).json({ answer: '后端调用失败：' + e.message });
   }
 }
