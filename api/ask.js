@@ -1,4 +1,4 @@
-// 阿里百炼对话接口（DashScope 应用级，已发布）
+// 阿里百炼对话接口（DashScope 应用级）
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
@@ -16,7 +16,7 @@ export default async function handler(req, res) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${process.env.BAILIAN_API_KEY}`
         },
-        body: JSON.stringify({ prompt })   // 新接口只认这句
+        body: JSON.stringify({ prompt })
       }
     );
 
