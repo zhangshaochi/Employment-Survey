@@ -23,13 +23,13 @@ export default async function handler(req, res) {
     }
 
     // 5. 调用百炼官方 REST API（无需 SDK，直接 HTTP 请求）
-    const bailianApiUrl = `https://dashscope.aliyuncs.com/api/v1/apps/${BAILIAN_APP_ID}/completion`;
+    const bailianApiUrl = "https://dashscope.aliyuncs.com/api/v1/chat/completions";
     const response = await fetch(bailianApiUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${DASHSCOPE_API_KEY}` // 认证格式：Bearer + 空格 + API Key
-      },
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.DASHSCOPE_API_KEY}`
+    }
       body: JSON.stringify({
         prompt: prompt,          // 用户的问题
         parameters: {
