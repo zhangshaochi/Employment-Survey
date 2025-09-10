@@ -1,4 +1,4 @@
-// 阿里百炼对话接口（DashScope 应用级）
+// 阿里百炼对话接口（DashScope 应用级，已发布）
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
@@ -8,17 +8,14 @@ export default async function handler(req, res) {
   console.log('请求体:', JSON.stringify({ prompt }));
 
   try {
-    const response = await fetch(
-      'https://dashscope.aliyuncs.com/api/v1/apps/353cca36c633460b982bc42ca2c2ed28/completion',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.BAILIAN_API_KEY}`
-        },
-        body: JSON.stringify({ prompt })
-      }
-    );
+    const response = await fetch('https://dashscope.aliyuncs.com/api/v1/apps/353cca36c633460b982bc42ca2c2ed28/completion', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.BAILIAN_API_KEY}`
+      },
+      body: JSON.stringify({ prompt })   // 新接口只认这一句
+    });
 
     const result = await response.json();
     console.log('百炼原始返回：', JSON.stringify(result, null, 2));
