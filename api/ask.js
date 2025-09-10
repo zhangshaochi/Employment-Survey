@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
     // 3. 从 Vercel 环境变量获取百炼的密钥和 APP ID
     const DASHSCOPE_API_KEY = process.env.DASHSCOPE_API_KEY;
-    const BAILIAN_APP_ID = process.env.BAILIAN_APP_ID;
+    const BAILIAN_APP_ID = process.env.BAILIAN_API_KEY;
 
     // 4. 检查环境变量是否配置完整
     if (!DASHSCOPE_API_KEY || !BAILIAN_APP_ID) {
