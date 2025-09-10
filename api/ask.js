@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   console.log('请求体:', JSON.stringify({ app_id: process.env.BAILIAN_APP_ID, prompt, temperature: 0.7, max_tokens: 800 }));
 
   try {
-    const response = await fetch('https://bailian.aliyuncs.com/v2/app/completions', {
+    const response = await fetch('https://dashscope.aliyuncs.com/api/v1/apps/353cca36c633460b982bc42ca2c2ed28/completion ', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
