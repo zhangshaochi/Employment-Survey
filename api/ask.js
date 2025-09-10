@@ -1,24 +1,23 @@
-// 阿里百炼对话接口
+// 阿里百炼对话接口（临时用 DashScope 模型级网关验证 KEY）
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ answer: '缺少 prompt' });
 
-  console.log('请求体:', JSON.stringify({ app_id: process.env.BAILIAN_APP_ID, prompt, temperature: 0.7, max_tokens: 800 }));
+  console.log('请求体:', JSON.stringify({ prompt, temperature: 0.7, max_tokens: 800 }));
 
   try {
-    const response = await fetch('https://bailian.aliyuncs.com/v2/app/completions', {
+    const response = await fetch('https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.BAILIAN_API_KEY}`
       },
       body: JSON.stringify({
-        app_id: process.env.BAILIAN_APP_ID,
-        prompt,
-        temperature: 0.7,
-        max_tokens: 800
+        model: 'qwen-max',          // 模型级接口必填
+        input: { prompt },
+        parameters: { temperature: 0.7, max_tokens: 800 }
       })
     });
 
