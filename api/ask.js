@@ -5,12 +5,14 @@ export default async function handler(req, res) {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ answer: '缺少 prompt' });
 
+  console.log('请求体:', JSON.stringify({ app_id: process.env.BAILIAN_APP_ID, prompt, temperature: 0.7, max_tokens: 800 }));
+
   try {
     const response = await fetch('https://bailian.aliyuncs.com/v2/app/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer sk-e6cc1abb56f449bf81d2c296edfb1d6f'  
+        'Authorization': `Bearer ${process.env.BAILIAN_API_KEY}`
       },
       body: JSON.stringify({
         app_id: process.env.BAILIAN_APP_ID,
@@ -21,7 +23,6 @@ export default async function handler(req, res) {
     });
 
     const result = await response.json();
-    // 先打印再返回
     console.log('百炼原始返回：', JSON.stringify(result, null, 2));
 
     const text = result?.output?.text || result?.text || '无返回内容';
