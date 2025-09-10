@@ -6,12 +6,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
-    "@dashscope/sdk": "^1.14.0"
-  },
   "author": "",
-  "license": "ISC",
-  "publishConfig": {
-    "registry": "https://registry.npmmirror.com/" 
-  }
+  "license": "ISC"
 }
