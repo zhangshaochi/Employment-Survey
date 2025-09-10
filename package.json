@@ -10,5 +10,8 @@
     "@dashscope/sdk": "^1.14.0"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "publishConfig": {
+    "registry": "https://registry.npmmirror.com/" 
+  }
 }
