@@ -1,6 +1,4 @@
 // 百炼 SDK 调用（Node.js 版）
-import fetch from 'node-fetch';   // Vercel 自带，不用装
-
 const API_KEY = process.env.DASHSCOPE_API_KEY;
 const APP_ID  = '353cca36c633460b982bc42ca2c2ed28';   // 你的房门号
 
