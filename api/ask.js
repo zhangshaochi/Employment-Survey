@@ -1,66 +1,63 @@
-// api/ask.js - 百炼官方 SDK 调用（Node.js + Vercel 适配版）
-import { Application } from '@dashscope/sdk';
-
-// 从 Vercel 环境变量获取密钥和 APP_ID
-const DASHSCOPE_API_KEY = process.env.DASHSCOPE_API_KEY;
-const BAILIAN_APP_ID = process.env.BAILIAN_APP_ID;
-
-// 验证环境变量是否存在
-if (!DASHSCOPE_API_KEY) {
-  console.error('错误：环境变量 DASHSCOPE_API_KEY 未配置');
-}
-if (!BAILIAN_APP_ID) {
-  console.error('错误：环境变量 BAILIAN_APP_ID 未配置');
-}
-
+// api/ask.js - 百炼纯 HTTP 调用（无需任何依赖，Vercel 直接运行）
 export default async function handler(req, res) {
   try {
-    // 校验请求方法
+    // 1. 只允许 POST 请求
     if (req.method !== 'POST') {
-      return res.status(405).json({ answer: '仅支持 POST 请求' });
+      return res.status(405).json({ answer: '仅支持 POST 请求，请使用正确的请求方式' });
     }
 
-    // 校验请求体中的 prompt
+    // 2. 检查是否有用户提问内容
     const { prompt } = req.body;
     if (!prompt || prompt.trim() === '') {
-      return res.status(400).json({ answer: '请输入提问内容' });
+      return res.status(400).json({ answer: '请输入你的问题，不能为空哦～' });
     }
     console.log('收到用户提问：', prompt);
 
-    // 校验环境变量
+    // 3. 从 Vercel 环境变量获取百炼的密钥和 APP ID
+    const DASHSCOPE_API_KEY = process.env.DASHSCOPE_API_KEY;
+    const BAILIAN_APP_ID = process.env.BAILIAN_APP_ID;
+
+    // 4. 检查环境变量是否配置完整
     if (!DASHSCOPE_API_KEY || !BAILIAN_APP_ID) {
-      return res.status(500).json({ answer: '后端环境变量未配置完整' });
+      return res.status(500).json({ answer: '后端配置不完整，请检查 API Key 和 APP ID' });
     }
 
-    // 配置百炼 SDK 的 API Key
-    Application.api_key = DASHSCOPE_API_KEY;
-
-    // 调用百炼智能体 API
-    console.log('开始调用百炼智能体，APP_ID：', BAILIAN_APP_ID);
-    const response = await Application.call({
-      app_id: BAILIAN_APP_ID,
-      prompt: prompt,
-      parameters: {
-        temperature: 0.7,
-        stream: false
-      }
+    // 5. 调用百炼官方 REST API（无需 SDK，直接 HTTP 请求）
+    const bailianApiUrl = `https://dashscope.aliyuncs.com/api/v1/apps/${BAILIAN_APP_ID}/completion`;
+    const response = await fetch(bailianApiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${DASHSCOPE_API_KEY}` // 认证格式：Bearer + 空格 + API Key
+      },
+      body: JSON.stringify({
+        prompt: prompt,          // 用户的问题
+        parameters: {
+          temperature: 0.7,      // 回答随机性（0.0~2.0）
+          stream: false          // 关闭流式输出，简化调试
+        }
+      })
     });
 
-    // 处理百炼响应
-    console.log('百炼返回原始响应：', JSON.stringify(response, null, 2));
-    if (response.status_code !== 200) {
-      const errorMsg = `百炼调用失败：${response.message || '未知错误'}（错误码：${response.status_code}）`;
+    // 6. 解析百炼返回的结果
+    const result = await response.json();
+    console.log('百炼返回原始数据：', JSON.stringify(result, null, 2));
+
+    // 7. 处理百炼的成功/失败响应
+    if (result.status_code === 200) {
+      // 成功：提取回答内容
+      const answer = result.output?.text?.trim() || '百炼智能体暂时没有回复哦～';
+      return res.status(200).json({ answer: answer });
+    } else {
+      // 失败：返回具体错误信息
+      const errorMsg = `百炼调用失败：${result.message || '未知错误'}（错误码：${result.status_code}）`;
       console.error(errorMsg);
       return res.status(500).json({ answer: errorMsg });
     }
 
-    // 提取回答
-    const answer = response.output?.text?.trim() || '百炼智能体未返回有效回答';
-    console.log('百炼返回回答：', answer);
-    return res.status(200).json({ answer: answer });
-
   } catch (error) {
-    const errorMsg = `后端代码异常：${error.message || '未知异常'}`;
+    // 捕获其他意外错误（如网络问题）
+    const errorMsg = `后端运行出错：${error.message || '未知异常'}`;
     console.error(errorMsg);
     return res.status(500).json({ answer: errorMsg });
   }
