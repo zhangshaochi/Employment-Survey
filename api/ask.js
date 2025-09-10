@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     }
 
     // 百炼官方 API Endpoint
-    const apiUrl = "https://dashscope.aliyuncs.com/api/v1/chat/completions";
+    const apiUrl = "https://dashscope.aliyuncs.com/api/v1/";
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
