@@ -11,25 +11,32 @@ export default async function handler(req, res) {
 
         // 校验环境变量
         const apiKey = process.env.DASHSCOPE_API_KEY;
-        const appId = process.env.BAILIAN_APP_ID;
-        if (!apiKey || !appId) {
+        const agentId = process.env.BAILIAN_APP_ID; // 注意：变量名更清晰（对应官方的 agentId）
+        if (!apiKey || !agentId) {
             console.error("缺少必要的环境变量: DASHSCOPE_API_KEY 或 BAILIAN_APP_ID");
             return res.status(500).json({ answer: "服务器配置错误" });
         }
 
-        // 调用百炼API
+        // 调用百炼API（修正 URL 和请求体）
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
 
         const response = await fetch(
-            `https://dashscope.aliyuncs.com/api/v1/applications/${appId}/invoke`,
+            `https://dashscope.aliyuncs.com/api/v1/agents/${agentId}/invoke`, // 修正：agents 而非 applications
             {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${apiKey}`,
                 },
-                body: JSON.stringify({ prompt }),
+                body: JSON.stringify({
+                    messages: [ // 修正：按官方要求，用 messages 数组传对话
+                        {
+                            role: "user",
+                            content: prompt,
+                        },
+                    ],
+                }),
                 signal: controller.signal,
             }
         );
@@ -53,9 +60,15 @@ export default async function handler(req, res) {
             return res.status(500).json({ answer: "服务响应格式错误" });
         }
 
-        // 处理响应数据
-        if (data && data.output && data.output.answer) {
-            return res.status(200).json({ answer: data.output.answer });
+        // 处理响应数据（修正：从 output.messages 取回答）
+        if (
+            data &&
+            data.output &&
+            Array.isArray(data.output.messages) &&
+            data.output.messages.length > 0
+        ) {
+            const answer = data.output.messages[0].content; // 官方结构：output.messages[0].content
+            return res.status(200).json({ answer });
         } else {
             console.error("响应数据格式异常:", data);
             return res.status(500).json({ answer: "服务响应数据不完整" });
