@@ -1,1 +1,2 @@
 mkdir public
+touch public/.gitkeep
