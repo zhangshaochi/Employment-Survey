@@ -1,21 +1,4 @@
 {
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next",
-      "config": {
-        "outputDirectory": ".next"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": ".next/server/pages/api/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": ".next/server/pages/$1"
-    }
-  ]
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next"
 }
