@@ -4,7 +4,7 @@
   "description": "就业调查小助手",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "rm -rf .next && rm -rf public/* && next build",
     "start": "next start",
     "lint": "next lint"
   },
