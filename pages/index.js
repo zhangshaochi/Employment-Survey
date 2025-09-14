@@ -45,7 +45,7 @@ const HomePage = () => {
       maxWidth: '600px', 
       margin: 'auto' 
     }}>
-      <h2>阿里百炼 · 就业专项调查小助手</h2>
+      <h2>就业专项调查小助手</h2>
       
       <textarea
         value={question}
