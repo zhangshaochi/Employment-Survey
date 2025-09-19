@@ -12,7 +12,7 @@ const HomePage = () => {
     }
 
     setLoading(true);
-    setAnswer('思考中…');
+    setAnswer('深度思考中…请耐心等待3-10s');
 
     try {
       const response = await fetch('/api/ask', {
@@ -31,7 +31,7 @@ const HomePage = () => {
         setAnswer(`错误: ${data.answer || '请求失败'}`);
       }
     } catch (error) {
-      setAnswer('网络请求失败，请稍后重试');
+      setAnswer('当前网络不佳，喝口水休息下，过会儿再试试');
       console.error('请求错误:', error);
     } finally {
       setLoading(false);
